@@ -7,14 +7,35 @@ pipeline {
   }
 
   stages {
+    stage('Debug: Git y entorno') {
+      steps {
+        bat 'git --version'
+        bat 'where git'
+        bat 'echo RUTA ACTUAL: %CD%'
+        bat 'dir'
+      }
+    }
+
     stage('Checkout') {
       steps {
-        git url: 'https://github.com/renevc14/HabannaERP.git'
+        git branch: 'main', url: 'https://github.com/renevc14/HabannaERP.git'
+      }
+    }
+
+    stage('Debug: Post-checkout') {
+      steps {
+        bat 'echo RUTA TRAS CHECKOUT: %CD%'
+        bat 'git status'
+        bat 'git log -1'
+        bat 'git rev-parse --abbrev-ref HEAD'
+        bat 'dir'
       }
     }
 
     stage('Install') {
       steps {
+        bat 'node -v'
+        bat 'npm -v'
         bat 'npm install'
       }
     }
@@ -36,6 +57,8 @@ pipeline {
         script {
           def branchName = bat(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
           def tag = (branchName == "main") ? "prod" : "dev"
+          echo "Construyendo imagen con tag: ${tag}"
+          bat "docker --version"
           bat "docker build -t ${IMAGE_NAME}:${tag} ."
         }
       }
@@ -47,6 +70,7 @@ pipeline {
           script {
             def branchName = bat(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
             def tag = (branchName == "main") ? "prod" : "dev"
+            echo "Subiendo imagen a DockerHub con tag: ${tag}"
             bat """
               echo %DOCKERHUB_PWD% | docker login -u ${DOCKER_USER} --password-stdin
               docker push ${IMAGE_NAME}:${tag}
@@ -64,6 +88,7 @@ pipeline {
           def port = (tag == "prod") ? "8082" : "8081"
           def container = (tag == "prod") ? "HabannaERP-prod" : "HabannaERP-dev"
 
+          echo "Desplegando contenedor ${container} en el puerto ${port}"
           bat """
             docker stop ${container} || exit 0
             docker rm ${container} || exit 0
@@ -76,7 +101,10 @@ pipeline {
 
   post {
     always {
-      echo "Pipeline finalizado"
+      echo "✅ Pipeline finalizado"
+    }
+    failure {
+      echo "Hubo un fallo en el pipeline. Revisa la etapa correspondiente arriba."
     }
   }
 }
