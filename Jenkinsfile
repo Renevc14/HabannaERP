@@ -2,9 +2,10 @@ pipeline {
   agent any
 
   environment {
-    IMAGE_NAME = 'renevc14/HabannaERP'
+    IMAGE_NAME = 'renevc14/habannaerp'
     DOCKER_USER = 'renevc14'
   }
+  
 
   stages {
     stage('Debug: Git y entorno') {
