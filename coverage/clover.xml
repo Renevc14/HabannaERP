@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1751998711010" clover="3.2.0">
-  <project timestamp="1751998711010" name="All files">
+<coverage generated="1752002024022" clover="3.2.0">
+  <project timestamp="1752002024022" name="All files">
     <metrics statements="45" coveredstatements="43" conditionals="2" coveredconditionals="0" methods="9" coveredmethods="9" elements="56" coveredelements="52" complexity="0" loc="45" ncloc="45" packages="4" files="4" classes="4"/>
     <package name="src">
       <metrics statements="11" coveredstatements="11" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-      <file name="index.ts" path="F:\LinkedIn\Pruebas tecnicas\Shaw and partners\backend\src\index.ts">
+      <file name="index.ts" path="F:\CURSOS\Maestria_FullStack\Diplomado_FullStack\Mod4 Integracion Continua\ProyectoFinal\backend\src\index.ts">
         <metrics statements="11" coveredstatements="11" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -21,7 +21,7 @@
     </package>
     <package name="src.controllers">
       <metrics statements="13" coveredstatements="11" conditionals="2" coveredconditionals="0" methods="2" coveredmethods="2"/>
-      <file name="fileController.ts" path="F:\LinkedIn\Pruebas tecnicas\Shaw and partners\backend\src\controllers\fileController.ts">
+      <file name="fileController.ts" path="F:\CURSOS\Maestria_FullStack\Diplomado_FullStack\Mod4 Integracion Continua\ProyectoFinal\backend\src\controllers\fileController.ts">
         <metrics statements="13" coveredstatements="11" conditionals="2" coveredconditionals="0" methods="2" coveredmethods="2"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
@@ -40,7 +40,7 @@
     </package>
     <package name="src.routes">
       <metrics statements="8" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-      <file name="fileRoutes.ts" path="F:\LinkedIn\Pruebas tecnicas\Shaw and partners\backend\src\routes\fileRoutes.ts">
+      <file name="fileRoutes.ts" path="F:\CURSOS\Maestria_FullStack\Diplomado_FullStack\Mod4 Integracion Continua\ProyectoFinal\backend\src\routes\fileRoutes.ts">
         <metrics statements="8" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -54,7 +54,7 @@
     </package>
     <package name="src.services">
       <metrics statements="13" coveredstatements="13" conditionals="0" coveredconditionals="0" methods="6" coveredmethods="6"/>
-      <file name="fileService.ts" path="F:\LinkedIn\Pruebas tecnicas\Shaw and partners\backend\src\services\fileService.ts">
+      <file name="fileService.ts" path="F:\CURSOS\Maestria_FullStack\Diplomado_FullStack\Mod4 Integracion Continua\ProyectoFinal\backend\src\services\fileService.ts">
         <metrics statements="13" coveredstatements="13" conditionals="0" coveredconditionals="0" methods="6" coveredmethods="6"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
