@@ -35,8 +35,10 @@ pipeline {
     stage('Debug: Branch Detectado') {
       steps {
         script {
-          def rawBranch = bat(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
-          echo "Resultado de 'git rev-parse --abbrev-ref HEAD': ${rawBranch}"
+          def rawOutput = bat(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
+          def lines = rawOutput.readLines()
+          def branchName = lines[-1].trim()
+          echo "Resultado limpio de 'git rev-parse --abbrev-ref HEAD': ${branchName}"
         }
       }
     }
@@ -64,8 +66,9 @@ pipeline {
     stage('Build Docker Image') {
       steps {
         script {
-          def rawBranch = bat(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
-          def branchName = (rawBranch == 'HEAD') ? 'main' : rawBranch
+          def rawOutput = bat(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
+          def lines = rawOutput.readLines()
+          def branchName = lines[-1].trim()
           def tag = (branchName == "main") ? "prod" : "dev"
           echo "Construyendo imagen con tag: ${tag}"
           bat "docker --version"
@@ -78,8 +81,9 @@ pipeline {
       steps {
         withCredentials([string(credentialsId: 'dockerhubpwd', variable: 'DOCKERHUB_PWD')]) {
           script {
-            def rawBranch = bat(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
-            def branchName = (rawBranch == 'HEAD') ? 'main' : rawBranch
+            def rawOutput = bat(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
+            def lines = rawOutput.readLines()
+            def branchName = lines[-1].trim()
             def tag = (branchName == "main") ? "prod" : "dev"
             echo "Subiendo imagen a DockerHub con tag: ${tag}"
             bat """
@@ -94,8 +98,9 @@ pipeline {
     stage('Deploy') {
       steps {
         script {
-          def rawBranch = bat(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
-          def branchName = (rawBranch == 'HEAD') ? 'main' : rawBranch
+          def rawOutput = bat(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
+          def lines = rawOutput.readLines()
+          def branchName = lines[-1].trim()
           def tag = (branchName == "main") ? "prod" : "dev"
           def port = (tag == "prod") ? "8082" : "8081"
           def container = (tag == "prod") ? "HabannaERP-prod" : "HabannaERP-dev"
@@ -116,7 +121,7 @@ pipeline {
       echo "Pipeline finalizado"
     }
     failure {
-      echo "Hubo un fallo en el pipeline. Revisa la etapa correspondiente arriba."
+      echo "Hubo un fallo en el pipeline. Revisa la etapa correspondiente."
     }
   }
 }
