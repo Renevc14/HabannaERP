@@ -9,7 +9,7 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-        git url: 'https://github.com/renevc14/HabannaERP.git' // Cambia esto también
+        git url: 'https://github.com/renevc14/HabannaERP.git'
       }
     }
 
@@ -34,7 +34,8 @@ pipeline {
     stage('Build Docker Image') {
       steps {
         script {
-          def tag = (env.GIT_BRANCH ==~ /.*main/) ? "prod" : "dev"
+          def branchName = bat(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
+          def tag = (branchName == "main") ? "prod" : "dev"
           bat "docker build -t ${IMAGE_NAME}:${tag} ."
         }
       }
@@ -42,12 +43,13 @@ pipeline {
 
     stage('Push to DockerHub') {
       steps {
-        withCredentials([string(credentialsId: 'dockerhubpwd', variable: 'dockerhubpwd')]) {
+        withCredentials([string(credentialsId: 'dockerhubpwd', variable: 'DOCKERHUB_PWD')]) {
           script {
-            def tag = (env.GIT_BRANCH ==~ /.*main/) ? "prod" : "dev"
+            def branchName = bat(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
+            def tag = (branchName == "main") ? "prod" : "dev"
             bat """
-            echo %dockerhubpwd% | docker login -u ${DOCKER_USER} --password-stdin
-            docker push ${IMAGE_NAME}:${tag}
+              echo %DOCKERHUB_PWD% | docker login -u ${DOCKER_USER} --password-stdin
+              docker push ${IMAGE_NAME}:${tag}
             """
           }
         }
@@ -57,7 +59,8 @@ pipeline {
     stage('Deploy') {
       steps {
         script {
-          def tag = (env.GIT_BRANCH ==~ /.*main/) ? "prod" : "dev"
+          def branchName = bat(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
+          def tag = (branchName == "main") ? "prod" : "dev"
           def port = (tag == "prod") ? "8082" : "8081"
           def container = (tag == "prod") ? "HabannaERP-prod" : "HabannaERP-dev"
 
@@ -73,8 +76,7 @@ pipeline {
 
   post {
     always {
-      echo "Pipeline finalizado en rama ${env.GIT_BRANCH}"
+      echo "Pipeline finalizado"
     }
   }
 }
-
