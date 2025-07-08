@@ -5,7 +5,6 @@ pipeline {
     IMAGE_NAME = 'renevc14/habannaerp'
     DOCKER_USER = 'renevc14'
   }
-  
 
   stages {
     stage('Debug: Git y entorno') {
@@ -33,6 +32,16 @@ pipeline {
       }
     }
 
+    // 🔍 Nueva etapa agregada para verificar nombre de rama
+    stage('Debug: Branch Detectado') {
+      steps {
+        script {
+          def rawBranch = bat(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
+          echo "🔎 Resultado de 'git rev-parse --abbrev-ref HEAD': ${rawBranch}"
+        }
+      }
+    }
+
     stage('Install') {
       steps {
         bat 'node -v'
@@ -56,7 +65,8 @@ pipeline {
     stage('Build Docker Image') {
       steps {
         script {
-          def branchName = bat(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
+          def rawBranch = bat(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
+          def branchName = (rawBranch == 'HEAD') ? 'main' : rawBranch
           def tag = (branchName == "main") ? "prod" : "dev"
           echo "Construyendo imagen con tag: ${tag}"
           bat "docker --version"
@@ -69,7 +79,8 @@ pipeline {
       steps {
         withCredentials([string(credentialsId: 'dockerhubpwd', variable: 'DOCKERHUB_PWD')]) {
           script {
-            def branchName = bat(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
+            def rawBranch = bat(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
+            def branchName = (rawBranch == 'HEAD') ? 'main' : rawBranch
             def tag = (branchName == "main") ? "prod" : "dev"
             echo "Subiendo imagen a DockerHub con tag: ${tag}"
             bat """
@@ -84,7 +95,8 @@ pipeline {
     stage('Deploy') {
       steps {
         script {
-          def branchName = bat(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
+          def rawBranch = bat(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
+          def branchName = (rawBranch == 'HEAD') ? 'main' : rawBranch
           def tag = (branchName == "main") ? "prod" : "dev"
           def port = (tag == "prod") ? "8082" : "8081"
           def container = (tag == "prod") ? "HabannaERP-prod" : "HabannaERP-dev"
@@ -102,7 +114,7 @@ pipeline {
 
   post {
     always {
-      echo "✅ Pipeline finalizado"
+      echo "Pipeline finalizado"
     }
     failure {
       echo "Hubo un fallo en el pipeline. Revisa la etapa correspondiente arriba."
