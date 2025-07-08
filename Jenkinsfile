@@ -32,12 +32,11 @@ pipeline {
       }
     }
 
-    // 🔍 Nueva etapa agregada para verificar nombre de rama
     stage('Debug: Branch Detectado') {
       steps {
         script {
           def rawBranch = bat(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
-          echo "🔎 Resultado de 'git rev-parse --abbrev-ref HEAD': ${rawBranch}"
+          echo "Resultado de 'git rev-parse --abbrev-ref HEAD': ${rawBranch}"
         }
       }
     }
