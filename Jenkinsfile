@@ -6,42 +6,9 @@ pipeline {
     DOCKER_USER = 'renevc14'
   }
 
-
-
-  stages {
-    stage('Debug: Git y entorno') {
-      steps {
-        bat 'git --version'
-        bat 'where git'
-        bat 'echo RUTA ACTUAL: %CD%'
-        bat 'dir'
-      }
-    }
-
     stage('Checkout') {
       steps {
         git branch: 'main', url: 'https://github.com/renevc14/HabannaERP.git'
-      }
-    }
-
-    stage('Debug: Post-checkout') {
-      steps {
-        bat 'echo RUTA TRAS CHECKOUT: %CD%'
-        bat 'git status'
-        bat 'git log -1'
-        bat 'git rev-parse --abbrev-ref HEAD'
-        bat 'dir'
-      }
-    }
-
-    stage('Debug: Branch Detectado') {
-      steps {
-        script {
-          def rawOutput = bat(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
-          def lines = rawOutput.readLines()
-          def branchName = lines[-1].trim()
-          echo "Resultado limpio de 'git rev-parse --abbrev-ref HEAD': ${branchName}"
-        }
       }
     }
 
