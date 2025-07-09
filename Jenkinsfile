@@ -6,6 +6,11 @@ pipeline {
     DOCKER_USER = 'renevc14'
   }
 
+  triggers {
+    pollSCM('H/2 * * * *') // Revisa cada 2 minutos si hay cambios en el repo
+  }
+
+  stages {
     stage('Checkout') {
       steps {
         git branch: 'main', url: 'https://github.com/renevc14/HabannaERP.git'
@@ -93,3 +98,4 @@ pipeline {
       echo "Hubo un fallo en el pipeline. Revisa la etapa correspondiente."
     }
   }
+}
