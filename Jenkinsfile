@@ -93,4 +93,3 @@ pipeline {
       echo "Hubo un fallo en el pipeline. Revisa la etapa correspondiente."
     }
   }
-}
