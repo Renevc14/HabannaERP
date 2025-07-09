@@ -6,6 +6,8 @@ pipeline {
     DOCKER_USER = 'renevc14'
   }
 
+
+
   stages {
     stage('Debug: Git y entorno') {
       steps {
